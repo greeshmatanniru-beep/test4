@@ -1,4 +1,5 @@
-const BASE_URL = '/api';
+const rawBaseUrl = import.meta.env.VITE_API_BASE_URL || '/api';
+const BASE_URL = rawBaseUrl.endsWith('/') ? rawBaseUrl.slice(0, -1) : rawBaseUrl;
 
 export function getAuthToken() {
   return localStorage.getItem('corpmind_token') || '';
