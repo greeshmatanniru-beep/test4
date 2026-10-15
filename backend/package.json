@@ -6,7 +6,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js",
+    "dev": "node --watch-path=config --watch-path=controllers --watch-path=middleware --watch-path=routes --watch-path=services --watch-path=validators --watch-path=server.js server.js",
     "init-db": "node scripts/init-db.js"
   },
   "dependencies": {

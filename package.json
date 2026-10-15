@@ -5,7 +5,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "npm run dev",
+    "start": "node backend/server.js",
     "dev": "concurrently -n \"BACKEND,FRONTEND\" -c \"blue.bold,magenta.bold\" \"npm run backend:dev\" \"npm run frontend:dev\"",
     "fullstack": "npm run dev",
     "frontend": "npm run dev --prefix frontend",

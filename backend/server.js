@@ -1,6 +1,6 @@
+import './config/env.js';
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import rateLimit from 'express-rate-limit';
@@ -14,15 +14,8 @@ import analyticsRoutes from './routes/analyticsRoutes.js';
 import settingsRoutes from './routes/settingsRoutes.js';
 import taskRoutes from './routes/taskRoutes.js';
 
-// Load environment variables (supports running inside backend/ or from monorepo root)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-import fs from 'fs';
-if (fs.existsSync(path.join(__dirname, '.env'))) {
-  dotenv.config({ path: path.join(__dirname, '.env') });
-} else {
-  dotenv.config({ path: path.join(__dirname, '..', '.env') });
-}
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -80,13 +73,21 @@ app.use((err, req, res, next) => {
 // Start Server & Connect Database
 async function startServer() {
   await initDatabase();
-  app.listen(PORT, () => {
+  const server = app.listen(PORT, () => {
     console.log(`=======================================================`);
     console.log(`🚀 CorpMind AI Enterprise Server running on port ${PORT}`);
     console.log(`📡 API Base: http://localhost:${PORT}/api`);
     console.log(`🔒 Data Isolation: Row Level Security (RLS) active`);
     console.log(`🧠 AI Engine: Google Gemini SDK (@google/genai) ready`);
     console.log(`=======================================================`);
+  });
+
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.warn(`⚠️ Port ${PORT} is currently in use by another process. Please close it or specify a different PORT.`);
+    } else {
+      console.error('Unhandled Server Error:', err);
+    }
   });
 }
 
