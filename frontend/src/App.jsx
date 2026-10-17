@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Outlet, useOutletContext } from 'react-router-dom';
 import { ToastProvider } from './context/ToastContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import ErrorBoundary from './components/ErrorBoundary';
 
 import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
@@ -26,7 +27,7 @@ function ProtectedLayout() {
       <div className="min-h-screen bg-slate-950 flex items-center justify-center text-sky-400">
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 border-4 border-sky-500/20 border-t-sky-500 rounded-full animate-spin" />
-          <span className="text-xs font-mono tracking-widest uppercase">Initializing NexusAI Enterprise AI...</span>
+          <span className="text-xs font-mono tracking-widest uppercase">Initializing CorpMind AI...</span>
         </div>
       </div>
     );
@@ -45,7 +46,9 @@ function ProtectedLayout() {
       <div className="flex-1 flex flex-col min-w-0">
         <Navbar onOpenUploadModal={() => setIsUploadModalOpen(true)} />
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
-          <Outlet context={{ openUploadModal: () => setIsUploadModalOpen(true) }} />
+          <ErrorBoundary>
+            <Outlet context={{ openUploadModal: () => setIsUploadModalOpen(true) }} />
+          </ErrorBoundary>
         </main>
       </div>
 
@@ -54,12 +57,26 @@ function ProtectedLayout() {
         isOpen={isUploadModalOpen}
         onClose={() => setIsUploadModalOpen(false)}
         onUploadSuccess={() => {
-          // Trigger refresh if needed
           window.dispatchEvent(new CustomEvent('corpmind:doc-uploaded'));
         }}
       />
     </div>
   );
+}
+
+function DashboardWrapper() {
+  const ctx = useOutletContext();
+  return <DashboardPage onOpenUploadModal={ctx?.openUploadModal} />;
+}
+
+function WorkspaceWrapper() {
+  const ctx = useOutletContext();
+  return <WorkspacePage onOpenUploadModal={ctx?.openUploadModal} />;
+}
+
+function DocumentsWrapper() {
+  const ctx = useOutletContext();
+  return <DocumentsPage onOpenUploadModal={ctx?.openUploadModal} />;
 }
 
 function AppRoutes() {
@@ -83,32 +100,16 @@ function AppRoutes() {
   );
 }
 
-// Helper wrapper components to pass modal trigger
-import { useOutletContext } from 'react-router-dom';
-
-function DashboardWrapper() {
-  const { openUploadModal } = useOutletContext();
-  return <DashboardPage onOpenUploadModal={openUploadModal} />;
-}
-
-function WorkspaceWrapper() {
-  const { openUploadModal } = useOutletContext();
-  return <WorkspacePage onOpenUploadModal={openUploadModal} />;
-}
-
-function DocumentsWrapper() {
-  const { openUploadModal } = useOutletContext();
-  return <DocumentsPage onOpenUploadModal={openUploadModal} />;
-}
-
 export default function App() {
   return (
-    <ToastProvider>
-      <AuthProvider>
-        <BrowserRouter>
-          <AppRoutes />
-        </BrowserRouter>
-      </AuthProvider>
-    </ToastProvider>
+    <ErrorBoundary>
+      <ToastProvider>
+        <AuthProvider>
+          <BrowserRouter>
+            <AppRoutes />
+          </BrowserRouter>
+        </AuthProvider>
+      </ToastProvider>
+    </ErrorBoundary>
   );
 }

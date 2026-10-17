@@ -82,8 +82,8 @@ export default function Sidebar() {
             <span className="text-[11px] font-semibold text-white uppercase tracking-wider">RLS Security Realm</span>
           </div>
           <div className="text-[11px] text-slate-400 leading-snug">
-            <p className="truncate"><strong className="text-slate-300">Dept:</strong> {department.toUpperCase()}</p>
-            <p className="truncate"><strong className="text-slate-300">Role:</strong> {role.toUpperCase()}</p>
+            <p className="truncate"><strong className="text-slate-300">Dept:</strong> {(department || 'operations').toUpperCase()}</p>
+            <p className="truncate"><strong className="text-slate-300">Role:</strong> {(role || 'employee').toUpperCase()}</p>
           </div>
           <div className="mt-2.5 pt-2 border-t border-slate-800 text-[10px] text-emerald-400 flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />

@@ -302,11 +302,48 @@ export const mockTaskMetrics = {
 };
 
 export const mockAIInsights = {
-  summary: 'Enterprise operational health is strong with 99.98% SLA compliance. 2 high-priority items require attention: HyperTensor invoice approval and Redis Sentinel verification.',
-  urgentCount: 2,
-  topRecommendations: [
-    'Execute automated dual-signoff workflow for HyperTensor GPU cluster invoice.',
-    'Confirm Redis Sentinel synchronization on OmniBank integration pipeline.',
-    'Initiate Day-1 zero-trust access provisioning for Dr. Aris Thorne.'
-  ]
+  workloadSummary: 'Enterprise operational health is strong with 99.98% SLA compliance. 2 high-priority items require attention: HyperTensor invoice approval and Redis Sentinel verification.',
+  summaryText: 'Enterprise operational health is strong with 99.98% SLA compliance.',
+  urgentIssues: [
+    {
+      title: 'HyperTensor $247.8k Invoice CFO Dual Approval',
+      department: 'finance',
+      priority: 'urgent',
+      deadline: new Date(now - 14 * 3600000).toISOString(),
+      isOverdue: true,
+      suggestedAction: 'Present 2/10 Net 45 rebate terms ($4,956 discount) to CFO for signoff.'
+    },
+    {
+      title: 'OmniBank Webhook Redis Sentinel Hotfix Review',
+      department: 'support',
+      priority: 'urgent',
+      deadline: new Date(now - 2 * 3600000).toISOString(),
+      isOverdue: true,
+      suggestedAction: 'Perform sentinel synchronization health check and notify Support Lead.'
+    }
+  ],
+  recommendedActions: [
+    {
+      step: 1,
+      action: 'Execute automated dual-signoff workflow for HyperTensor GPU cluster invoice.',
+      priority: 'urgent',
+      rationale: 'Avoids 1.5% late payment penalty while securing volume reservation.'
+    },
+    {
+      step: 2,
+      action: 'Confirm Redis Sentinel synchronization on OmniBank integration pipeline.',
+      priority: 'high',
+      rationale: 'Prevents customer webhook timeouts before the weekend processing cycle.'
+    },
+    {
+      step: 3,
+      action: 'Initiate Day-1 zero-trust access provisioning for Dr. Aris Thorne.',
+      priority: 'medium',
+      rationale: 'Pre-provisions hardware tokens and cluster clearance for onboarding.'
+    }
+  ],
+  urgentTasksCount: 2,
+  overdueCount: 2,
+  model: 'gemini-2.5-flash',
+  isLive: true
 };

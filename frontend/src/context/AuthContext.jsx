@@ -69,7 +69,7 @@ export const DEMO_PROFILES = [
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(getCurrentUser());
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { addToast } = useToast();
 
   useEffect(() => {
@@ -90,16 +90,27 @@ export function AuthProvider({ children }) {
         return;
       }
       if (token.startsWith('demo_token_')) {
-        setUser(getCurrentUser());
+        const u = getCurrentUser();
+        if (u) setUser(u);
         setLoading(false);
         return;
       }
       try {
-        const data = await api.auth.getProfile();
-        setUser(data.user);
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Auth check timeout')), 2500)
+        );
+        const data = await Promise.race([api.auth.getProfile(), timeoutPromise]);
+        if (data?.user) {
+          setUser(data.user);
+        }
       } catch (err) {
-        clearSession();
-        setUser(null);
+        const existing = getCurrentUser();
+        if (existing) {
+          setUser(existing);
+        } else {
+          clearSession();
+          setUser(null);
+        }
       } finally {
         setLoading(false);
       }

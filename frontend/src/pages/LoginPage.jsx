@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth, DEMO_PROFILES } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -18,8 +18,14 @@ import {
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const { login, register, loginAsDemo } = useAuth();
+  const { isAuthenticated, login, register, loginAsDemo } = useAuth();
   const { addToast } = useToast();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   const [mode, setMode] = useState('login'); // 'login' | 'register'
   const [email, setEmail] = useState('admin@corpmind.ai');

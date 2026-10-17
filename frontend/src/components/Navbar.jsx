@@ -92,7 +92,7 @@ export default function Navbar({ onOpenUploadModal }) {
                   Switch Role (Instant RLS Demo)
                 </div>
                 <div className="py-1 space-y-1">
-                  {demoProfiles.map((p) => {
+                  {(demoProfiles || []).map((p) => {
                     const isCurrent = user?.email === p.email;
                     return (
                       <button
