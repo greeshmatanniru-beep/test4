@@ -89,6 +89,11 @@ export function AuthProvider({ children }) {
         setLoading(false);
         return;
       }
+      if (token.startsWith('demo_token_')) {
+        setUser(getCurrentUser());
+        setLoading(false);
+        return;
+      }
       try {
         const data = await api.auth.getProfile();
         setUser(data.user);
@@ -109,7 +114,25 @@ export function AuthProvider({ children }) {
       addToast(`Welcome back, ${data.user.full_name}!`, 'success');
       return data.user;
     } catch (err) {
-      addToast(err.message, 'error');
+      // Resilient Demo Fallback if backend is sleeping or spinning up on Render
+      const demoProfile = DEMO_PROFILES.find((p) => p.email.toLowerCase() === email.toLowerCase());
+      if (demoProfile && (password === 'password123' || !password)) {
+        const mockUser = {
+          id: `demo-${demoProfile.roleKey}`,
+          email: demoProfile.email,
+          full_name: demoProfile.name,
+          role: demoProfile.role,
+          department: demoProfile.department,
+          is_demo: true,
+        };
+        const mockToken = `demo_token_${demoProfile.roleKey}`;
+        localStorage.setItem('corpmind_token', mockToken);
+        localStorage.setItem('corpmind_user', JSON.stringify(mockUser));
+        setUser(mockUser);
+        addToast(`Welcome ${mockUser.full_name}! (Instant Demo Session)`, 'success');
+        return mockUser;
+      }
+      addToast(err.message || 'Unable to connect to backend server', 'error');
       throw err;
     }
   };
