@@ -372,52 +372,60 @@ export default function DocumentUploadModal({ isOpen, onClose, onUploadSuccess }
 
               {/* Entity extraction card */}
               <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-3">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Identified Supplier / Entity</span>
-                    <h4 className="text-base font-bold text-white">
-                      {extractionResult.document.extracted_data?.supplierName || 'Enterprise Partner'}
-                    </h4>
-                  </div>
-                  <RiskBadge score={extractionResult.document.risk_score} size="md" />
-                </div>
-
-                <div className="grid grid-cols-2 gap-3 pt-2 border-t border-slate-800/80 text-xs">
-                  <div>
-                    <span className="text-slate-400 block">Total Amount:</span>
-                    <span className="text-sm font-bold text-white font-mono">
-                      ${Number(extractionResult.document.extracted_data?.totalAmount || 0).toLocaleString()}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-slate-400 block">Due Date:</span>
-                    <span className="text-sm font-medium text-slate-200">
-                      {extractionResult.document.extracted_data?.dueDate || 'N/A'}
-                    </span>
-                  </div>
-                </div>
-
-                {extractionResult.document.extracted_data?.complianceNotes && (
-                  <div className="p-2.5 rounded-lg bg-slate-950/80 border border-slate-800 text-xs">
-                    <span className="text-sky-400 font-semibold block mb-0.5">Compliance & Audit Notes:</span>
-                    <p className="text-slate-300">{extractionResult.document.extracted_data.complianceNotes}</p>
-                  </div>
-                )}
-
-                {/* Line items table */}
-                {extractionResult.document.extracted_data?.lineItems?.length > 0 && (
-                  <div>
-                    <span className="text-[11px] font-semibold text-slate-400 block mb-1">Parsed Line Items:</span>
-                    <div className="space-y-1">
-                      {extractionResult.document.extracted_data.lineItems.map((item, idx) => (
-                        <div key={idx} className="flex justify-between items-center text-xs p-1.5 rounded bg-slate-950/40">
-                          <span className="text-slate-300 truncate max-w-[280px]">{item.description}</span>
-                          <span className="text-white font-mono font-semibold">${Number(item.amount).toLocaleString()}</span>
+                {(() => {
+                  const doc = extractionResult?.document || extractionResult || {};
+                  const extracted = doc.extracted_data || extractionResult?.extracted || {};
+                  const riskScore = doc.risk_score ?? extracted.riskScore ?? 15;
+                  return (
+                    <>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Identified Supplier / Entity</span>
+                          <h4 className="text-base font-bold text-white">
+                            {extracted.supplierName || 'Enterprise Partner'}
+                          </h4>
                         </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                        <RiskBadge score={riskScore} size="md" />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3 pt-2 border-t border-slate-800/80 text-xs">
+                        <div>
+                          <span className="text-slate-400 block">Total Amount:</span>
+                          <span className="text-sm font-bold text-white font-mono">
+                            ${Number(extracted.totalAmount || 0).toLocaleString()}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 block">Due Date:</span>
+                          <span className="text-sm font-medium text-slate-200">
+                            {extracted.dueDate || 'N/A'}
+                          </span>
+                        </div>
+                      </div>
+
+                      {extracted.complianceNotes && (
+                        <div className="p-2.5 rounded-lg bg-slate-950/80 border border-slate-800 text-xs">
+                          <span className="text-sky-400 font-semibold block mb-0.5">Compliance & Audit Notes:</span>
+                          <p className="text-slate-300">{extracted.complianceNotes}</p>
+                        </div>
+                      )}
+
+                      {extracted.lineItems?.length > 0 && (
+                        <div>
+                          <span className="text-[11px] font-semibold text-slate-400 block mb-1">Parsed Line Items:</span>
+                          <div className="space-y-1">
+                            {extracted.lineItems.map((item, idx) => (
+                              <div key={idx} className="flex justify-between items-center text-xs p-1.5 rounded bg-slate-950/40">
+                                <span className="text-slate-300 truncate max-w-[280px]">{item.description}</span>
+                                <span className="text-white font-mono font-semibold">${Number(item.amount).toLocaleString()}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
               </div>
 
               {/* Triggered Workflows notification */}

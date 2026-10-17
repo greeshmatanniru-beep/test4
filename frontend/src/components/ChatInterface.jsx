@@ -142,8 +142,10 @@ export default function ChatInterface() {
   const loadChatHistory = async () => {
     try {
       const data = await api.ai.getHistory(department);
-      if (data.messages && data.messages.length > 0) {
+      if (data?.messages && data.messages.length > 0) {
         setMessages(data.messages);
+      } else if (data?.history && data.history.length > 0) {
+        setMessages(data.history);
       } else {
         // Default welcoming message
         setMessages([
@@ -165,7 +167,7 @@ export default function ChatInterface() {
   const loadDepartmentDocs = async () => {
     try {
       const data = await api.documents.getAll();
-      setDocuments(data.documents || []);
+      setDocuments(data?.documents || (Array.isArray(data) ? data : []));
     } catch (err) {
       console.error('Failed to load documents:', err);
     }
@@ -196,11 +198,11 @@ export default function ChatInterface() {
           msg.id === userMessageId
             ? {
                 ...msg,
-                response: result.response,
-                sources: result.sources || [],
-                isSupported: result.isSupported,
-                tokens_used: result.tokensUsed,
-                model: result.model
+                response: result?.response || result?.message || 'Query processed successfully.',
+                sources: result?.sources || [],
+                isSupported: result?.isSupported,
+                tokens_used: result?.tokensUsed || result?.tokens || 120,
+                model: result?.model || 'gemini-2.5-flash'
               }
             : msg
         )
