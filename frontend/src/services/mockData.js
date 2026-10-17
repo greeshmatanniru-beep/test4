@@ -10,6 +10,8 @@ export const mockMetrics = {
   avgProcessingTimeSec: 1.8,
   estimatedCostSavingsUsd: 42800,
   activeAlerts: 1,
+  totalTokensConsumed: 148500,
+  automationSuccessRate: 99.4,
   throughputTimeline: [
     { time: '08:00', tokens: 1840, workflows: 4, documents: 2 },
     { time: '10:00', tokens: 4210, workflows: 12, documents: 7 },

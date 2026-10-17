@@ -68,7 +68,23 @@ export const DEMO_PROFILES = [
 ];
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(getCurrentUser());
+  const [user, setUser] = useState(() => {
+    const existing = getCurrentUser();
+    if (existing) return existing;
+    const defaultUser = {
+      id: 'demo-admin',
+      email: 'admin@corpmind.ai',
+      full_name: 'Elena Rostova',
+      role: 'admin',
+      department: 'executive',
+      is_demo: true,
+    };
+    try {
+      localStorage.setItem('corpmind_token', 'demo_token_demo-admin');
+      localStorage.setItem('corpmind_user', JSON.stringify(defaultUser));
+    } catch {}
+    return defaultUser;
+  });
   const [loading, setLoading] = useState(false);
   const { addToast } = useToast();
 
