@@ -4,6 +4,10 @@
   "description": "CorpMind AI - Enterprise AI Operations & Workflow Automation Platform",
   "private": true,
   "type": "module",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
   "scripts": {
     "start": "node backend/server.js",
     "dev": "concurrently -n \"BACKEND,FRONTEND\" -c \"blue.bold,magenta.bold\" \"npm run backend:dev\" \"npm run frontend:dev\"",
