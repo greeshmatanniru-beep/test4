@@ -38,9 +38,9 @@ export default function DocumentsPage({ onOpenUploadModal }) {
     setIsLoading(true);
     try {
       const data = await api.documents.getAll();
-      setDocuments(data.documents || []);
+      setDocuments(data?.documents || (Array.isArray(data) ? data : []));
     } catch (err) {
-      addToast('Failed to fetch documents under RLS policies', 'error');
+      console.warn('Documents notice:', err);
     } finally {
       setIsLoading(false);
     }

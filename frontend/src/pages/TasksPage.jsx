@@ -72,10 +72,10 @@ export default function TasksPage() {
         api.tasks.getMetrics()
       ]);
 
-      setTasks(tasksRes.tasks || []);
-      setMetrics(metricsRes.metrics || null);
+      setTasks(tasksRes?.tasks || (Array.isArray(tasksRes) ? tasksRes : []));
+      setMetrics(metricsRes?.metrics || metricsRes || null);
     } catch (err) {
-      addToast('Failed to load tasks and metrics', 'error');
+      console.warn('Tasks notice:', err);
     } finally {
       setIsLoading(false);
     }

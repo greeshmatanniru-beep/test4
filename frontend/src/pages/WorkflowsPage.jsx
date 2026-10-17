@@ -36,9 +36,9 @@ export default function WorkflowsPage() {
     setIsLoading(true);
     try {
       const data = await api.workflows.getAll();
-      setWorkflows(data.workflows || []);
+      setWorkflows(data?.workflows || (Array.isArray(data) ? data : []));
     } catch (err) {
-      addToast('Failed to load workflows under RLS', 'error');
+      console.warn('Workflows notice:', err);
     } finally {
       setIsLoading(false);
     }

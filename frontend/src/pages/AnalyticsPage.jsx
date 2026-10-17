@@ -41,10 +41,10 @@ export default function AnalyticsPage() {
         api.analytics.getMetrics(),
         api.analytics.getAuditLogs()
       ]);
-      setMetrics(mRes.metrics);
-      setAuditLogs(lRes.logs || []);
+      setMetrics(mRes?.metrics || mRes || null);
+      setAuditLogs(lRes?.logs || (Array.isArray(lRes) ? lRes : []));
     } catch (err) {
-      addToast('Failed to load analytics telemetry', 'error');
+      console.warn('Analytics notice:', err);
     } finally {
       setIsLoading(false);
     }

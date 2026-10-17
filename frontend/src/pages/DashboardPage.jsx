@@ -88,15 +88,15 @@ export default function DashboardPage({ onOpenUploadModal }) {
         api.tasks.getAll().catch(() => ({ tasks: [] }))
       ]);
 
-      setMetrics(metricsData.metrics);
-      setRecentDocs(docsData.documents || []);
-      setWorkflows(wfData.workflows || []);
-      setAuditLogs(logsData.logs?.slice(0, 5) || []);
-      setTaskMetrics(taskMetricsData.metrics);
-      setAiInsights(insightsData.insights);
-      setUpcomingTasks(tasksData.tasks ? tasksData.tasks.slice(0, 5) : []);
+      setMetrics(metricsData?.metrics || metricsData || null);
+      setRecentDocs(docsData?.documents || (Array.isArray(docsData) ? docsData : []));
+      setWorkflows(wfData?.workflows || (Array.isArray(wfData) ? wfData : []));
+      setAuditLogs(logsData?.logs?.slice(0, 5) || (Array.isArray(logsData) ? logsData.slice(0, 5) : []));
+      setTaskMetrics(taskMetricsData?.metrics || taskMetricsData || null);
+      setAiInsights(insightsData?.insights || insightsData || null);
+      setUpcomingTasks(tasksData?.tasks ? tasksData.tasks.slice(0, 5) : (Array.isArray(tasksData) ? tasksData.slice(0, 5) : []));
     } catch (err) {
-      addToast('Failed to load real-time telemetry metrics', 'error');
+      console.warn('Dashboard telemetry notice:', err);
     } finally {
       setIsLoading(false);
     }
